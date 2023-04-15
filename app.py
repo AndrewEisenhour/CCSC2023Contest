@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-
-# This app kinda works
+from tkinter.simpledialog import askstring
+# This app works
 class Employee:
     def __init__(self, name):
         self.name = name
@@ -16,6 +16,7 @@ class Employee:
 class App:
     def __init__(self):
         self.root = tk.Tk()
+        self.root.geometry("500x250")
         self.employees = []
         self.current_employee = None
 
@@ -38,7 +39,7 @@ class App:
         self.back_button = tk.Button(self.view_employee_screen, text="Back", command=self.back_to_main_screen)
         self.back_button.pack(pady=10)
 
-        self.patient_listbox = tk.Listbox(self.view_employee_screen)
+        self.patient_listbox = tk.Listbox(self.view_employee_screen, selectmode="multiple")
         self.patient_listbox.pack()
 
         self.assign_patient_button = tk.Button(self.view_employee_screen, text="Assign Patient", command=self.assign_patient)
@@ -47,7 +48,7 @@ class App:
         self.root.mainloop()
 
     def add_employee(self):
-        employee_name = messagebox.askstring("Add Employee", "Enter Employee Name:")
+        employee_name = askstring("Add Employee", "Enter Employee Name:")
         if employee_name:
             employee = Employee(employee_name)
             self.employees.append(employee)
@@ -70,7 +71,7 @@ class App:
 
     def assign_patient(self):
         if self.current_employee:
-            patient_name = messagebox.askstring("Assign Patient", "Enter Patient Name:")
+            patient_name = askstring("Assign Patient", "Enter Patient Name:")
             if patient_name:
                 for employee in self.employees:
                     if employee.name == self.current_employee:
