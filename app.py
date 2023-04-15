@@ -4,6 +4,7 @@ import json
 from tkinter import messagebox
 from tkinter.simpledialog import askstring
 # This app works
+curEmp = "Employee"
 class Employee:
     def __init__(self, name, address, patients):
         self.name = name
@@ -35,21 +36,24 @@ class App:
         # Create main screen with list view of employees
         self.main_screen = tk.Frame(self.root)
         self.main_screen.pack()
-
+       
         # Create app bar
         self.app_bar = tk.Frame(self.root)
         self.app_bar.pack(side=tk.TOP,fill=tk.X)
 
-        # Create app title label
-        self.app_title = tk.Label(self.app_bar,text="Nurse's Homepage")
-        self.app_title.pack(side=tk.TOP, padx=0)
-        Font_tuple = ("Microsoft Sans Serif", 40)
-        self.app_title.configure(font = Font_tuple)
+        
+
         # Create app menu
         self.app_menu = tk.OptionMenu(self.app_bar, tk.StringVar(), "Menu", "Add User", command=self.add_employee)
         self.app_menu.pack(side=tk.RIGHT, padx=0)
         self.app_menu.configure(width=0)
-        
+
+        # Create app title label
+        self.app_title = tk.Label(self.main_screen,text="Nurse's Homepage")
+        self.app_title.pack(side=tk.TOP, padx=0)
+        Font_tuple = ("Microsoft Sans Serif", 40)
+        self.app_title.configure(font = Font_tuple)
+
         # Create list view of employees
         self.employee_listbox = tk.Listbox(self.main_screen)
         Font_tuple = ("Microsoft Sans Serif", 20)
@@ -63,9 +67,16 @@ class App:
 
         self.view_employee_button = tk.Button(self.main_screen, text="View Employee", command=self.view_employee)
         self.view_employee_button.pack()
+        self.assign_patient_button = tk.Button(self.main_screen, text="Assign Patient", command=self.assign_patient)
+        self.assign_patient_button.pack(pady=10)
 
         # Create second screen for viewing and assigning patients
         self.view_employee_screen = tk.Frame(self.root)
+
+        self.nurse_title=tk.Label(self.view_employee_screen, text = curEmp)
+        self.nurse_title.pack(side=tk.TOP, padx=0)
+        Font_tuple = ("Microsoft Sans Serif", 20)
+        self.nurse_title.configure(font = Font_tuple)
 
         self.back_button = tk.Button(self.view_employee_screen, text="Back", command=self.back_to_main_screen)
         self.back_button.pack(pady=10)
@@ -89,10 +100,17 @@ class App:
         selected_employee = self.employee_listbox.get(tk.ACTIVE)
         if selected_employee:
             self.current_employee = selected_employee
+            curEmp = self.current_employee
+
             self.main_screen.pack_forget()
             self.view_employee_screen.pack()
             self.root.title(f"Viewing Employee: {self.current_employee}")
+            
+            
             self.update_patient_listbox()
+    
+
+           
 
     def back_to_main_screen(self):
         self.current_employee = None
