@@ -1,30 +1,90 @@
 import tkinter as tk
+from tkinter import messagebox
 
-class App(tk.Tk):
+class Employee:
+    def __init__(self, name):
+        self.name = name
+        self.patients = []
+
+    def add_patient(self, patient_name):
+        self.patients.append(patient_name)
+
+    def get_patients(self):
+        return self.patients
+
+class App:
     def __init__(self):
-        super().__init__()
-        self.title("Two Screen App")
-        self.geometry("400x300")
+        self.root = tk.Tk()
+        self.employees = []
+        self.current_employee = None
 
-        # Create the first screen
-        self.screen1 = tk.Frame(self)
-        tk.Label(self.screen1, text="Welcome to Screen 1").pack()
-        tk.Button(self.screen1, text="Go to Screen 2", command=self.show_screen2).pack()
-        self.screen1.pack()
+        # Create main screen with list view of employees
+        self.main_screen = tk.Frame(self.root)
+        self.main_screen.pack()
 
-        # Create the second screen
-        self.screen2 = tk.Frame(self)
-        tk.Label(self.screen2, text="Welcome to Screen 2").pack()
-        tk.Button(self.screen2, text="Go to Screen 1", command=self.show_screen1).pack()
+        self.employee_listbox = tk.Listbox(self.main_screen)
+        self.employee_listbox.pack(pady=10)
 
-    def show_screen1(self):
-        self.screen2.pack_forget()
-        self.screen1.pack()
+        self.add_employee_button = tk.Button(self.main_screen, text="Add Employee", command=self.add_employee)
+        self.add_employee_button.pack()
 
-    def show_screen2(self):
-        self.screen1.pack_forget()
-        self.screen2.pack()
+        self.view_employee_button = tk.Button(self.main_screen, text="View Employee", command=self.view_employee)
+        self.view_employee_button.pack()
 
-if __name__ == "__main__":
+        # Create second screen for viewing and assigning patients
+        self.view_employee_screen = tk.Frame(self.root)
+
+        self.back_button = tk.Button(self.view_employee_screen, text="Back", command=self.back_to_main_screen)
+        self.back_button.pack(pady=10)
+
+        self.patient_listbox = tk.Listbox(self.view_employee_screen)
+        self.patient_listbox.pack()
+
+        self.assign_patient_button = tk.Button(self.view_employee_screen, text="Assign Patient", command=self.assign_patient)
+        self.assign_patient_button.pack(pady=10)
+
+        self.root.mainloop()
+
+    def add_employee(self):
+        employee_name = messagebox.askstring("Add Employee", "Enter Employee Name:")
+        if employee_name:
+            employee = Employee(employee_name)
+            self.employees.append(employee)
+            self.employee_listbox.insert(tk.END, employee_name)
+
+    def view_employee(self):
+        selected_employee = self.employee_listbox.get(tk.ACTIVE)
+        if selected_employee:
+            self.current_employee = selected_employee
+            self.main_screen.pack_forget()
+            self.view_employee_screen.pack()
+            self.root.title(f"Viewing Employee: {self.current_employee}")
+            self.update_patient_listbox()
+
+    def back_to_main_screen(self):
+        self.current_employee = None
+        self.view_employee_screen.pack_forget()
+        self.main_screen.pack()
+        self.root.title("Employee List")
+
+    def assign_patient(self):
+        if self.current_employee:
+            patient_name = messagebox.askstring("Assign Patient", "Enter Patient Name:")
+            if patient_name:
+                for employee in self.employees:
+                    if employee.name == self.current_employee:
+                        employee.add_patient(patient_name)
+                        self.update_patient_listbox()
+                        break
+
+    def update_patient_listbox(self):
+        self.patient_listbox.delete(0, tk.END)
+        if self.current_employee:
+            for employee in self.employees:
+                if employee.name == self.current_employee:
+                    patients = employee.get_patients()
+                    for patient in patients:
+                        self.patient_listbox.insert(tk.END, patient)
+
+if __name__ == '__main__':
     app = App()
-    app.mainloop()
