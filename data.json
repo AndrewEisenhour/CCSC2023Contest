@@ -1,0 +1,74 @@
+{
+    "Employees":
+        [
+            {
+                "id": 1,
+                "name": "John Doe",
+                "patients": [],
+                "address": "1218 W Linwood St, Springfield, MO"
+            },
+            {
+                "id": 2,
+                "name": "Jane Doe",
+                "patients": [],
+                "address": "927 S Farm Road 197, Springfield, MO"
+            },
+            {
+                "id": 3,
+                "name": "Jake Doe",
+                "patients": [],
+                "address": "2557 S Nettleton Ave, Springfield, MO"
+            },
+            {
+                "id": 4,
+                "name": "James Doe",
+                "patients": [],
+                "address": "428 S Duke Ave, Springfield, MO"
+            },
+            {
+                "id": 5,
+                "name": "Jaime Doe",
+                "patients": [],
+                "address": "1841 E Farm Road 56, Fair Grove, MO"
+            }
+        ],
+    "Patients":
+        [
+            {
+                "id": 1,
+                "name": "John One",
+                "address": "185 E Old Mill Rd, Fair Grove, MO",
+                "careTime": 1800
+            },
+            {
+                "id": 2,
+                "name": "John Two",
+                "address": "307 E Whitehorn Dr, Republic, MO",
+                "careTime": 3600
+            },
+            {
+                "id": 3,
+                "name": "John Three",
+                "address": "217 Sophie Jane Ln, Duenweg, MO",
+                "careTime": 2400
+            },
+            {
+                "id": 4,
+                "name": "John Four",
+                "address": "910 S Devonshire Dr, Springfield, MO",
+                "careTime": 900
+            },
+            {
+                "id": 5,
+                "name": "John Five",
+                "address": "1750 W Bennett St, Springfield, MO",
+                "careTime": 7200
+            },
+            {
+                "id": 6,
+                "name": "John Six",
+                "address": "5496 S Jefferson Ave, Springfield, MO",
+                "careTime": 2000
+            }
+        ]
+}

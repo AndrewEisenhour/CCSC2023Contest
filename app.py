@@ -1,32 +1,45 @@
 import tkinter as tk
+import json
 from tkinter import messagebox
 from tkinter.simpledialog import askstring
 # This app works
 class Employee:
-    def __init__(self, name):
+    def __init__(self, name, address, patients):
         self.name = name
-        self.patients = []
+        self.address = address
+        self.patients = patients
 
-    def add_patient(self, patient_name):
-        self.patients.append(patient_name)
+    def add_patient(self, patient):
+        self.patients.append(patient)
 
     def get_patients(self):
         return self.patients
 
+class Patient:
+    def __init__(self, name, address, careTime):
+        self.name = name
+        self.address = address
+        self.careTime = careTime
+        
 class App:
     def __init__(self):
+        data = json.load(open('data.json'))
+        
         self.root = tk.Tk()
         self.root.geometry("500x250")
         self.employees = []
         self.current_employee = None
-
+        
         # Create main screen with list view of employees
         self.main_screen = tk.Frame(self.root)
         self.main_screen.pack()
 
         self.employee_listbox = tk.Listbox(self.main_screen)
         self.employee_listbox.pack(pady=10)
-
+        for person in data["Employees"]:
+            employee = Employee(person["name"])
+            self.employees.append(employee)
+            self.employee_listbox.insert(tk.END, employee.name)
         self.add_employee_button = tk.Button(self.main_screen, text="Add Employee", command=self.add_employee)
         self.add_employee_button.pack()
 
