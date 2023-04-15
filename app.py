@@ -3,6 +3,7 @@ from map import getTravelTime
 import json
 from tkinter import messagebox
 from tkinter.simpledialog import askstring
+import datetime
 # This app works
 curEmp = "Employee"
 class Employee:
@@ -10,12 +11,17 @@ class Employee:
         self.name = name
         self.address = address
         self.patients = patients
+        self.startTimes = []
 
-    def add_patient(self, patient):
+    def add_patient(self, patient, time):
         self.patients.append(patient)
+        self.startTimes.append(time)
 
     def get_patients(self):
         return self.patients
+    
+    def get_startTimes(self):
+        return self.startTimes
 
 class Patient:
     def __init__(self, name, address, careTime):
@@ -31,7 +37,7 @@ class App:
         self.employees = []
         self.patients = []
         self.current_employee = None
-        #self.employees, self.patients = self.calculate()
+        self.employees, self.patients = self.calculate()
 
         # Create main screen with list view of employees
         self.main_screen = tk.Frame(self.root)
@@ -59,6 +65,7 @@ class App:
         Font_tuple = ("Microsoft Sans Serif", 20)
         self.employee_listbox.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         self.employee_listbox.configure(justify = 'center', font = Font_tuple)
+        self.employee_listbox.bind('<Double-1>', lambda e:self.view_employee())
         self.employee_listbox.pack(pady=10)
         for employee in self.employees:
             self.employee_listbox.insert(tk.END, employee.name)
@@ -121,21 +128,30 @@ class App:
     def assign_patient(self):
         if self.current_employee:
             patient_name = askstring("Assign Patient", "Enter Patient Name:")
+            patient_address = askstring("Assign Patient", "Enter Patient Address:")
+            patient_care = askstring("Assign Patient", "Enter time of care:")
             if patient_name:
+                patient = Patient(patient_name, patient_address, patient_care)
+                self.patients.append(patient)
                 for employee in self.employees:
                     if employee.name == self.current_employee:
-                        employee.add_patient(patient_name)
+                        employee.add_patient(patient_name, 34)
                         self.update_patient_listbox()
                         break
-
+        
     def update_patient_listbox(self):
         self.patient_listbox.delete(0, tk.END)
         if self.current_employee:
             for employee in self.employees:
                 if employee.name == self.current_employee:
                     patients = employee.get_patients()
-                    for patient in patients:
-                        self.patient_listbox.insert(tk.END, patient)
+                    startTimes = employee.get_startTimes()
+                    count = 1
+                    time = datetime.datetime(100,1,1,8,0,0)
+                    for i in range(len(patients)):
+                        time2 = time + datetime.timedelta(0,startTimes[i])
+                        self.patient_listbox.insert(tk.END, str(count) + ". " + patients[i] + " " + str(time2.time()))
+                        count += 1
 
     def calculate(self):
         data = json.load(open('data.json'))
@@ -148,7 +164,6 @@ class App:
                 patient = Patient(person["name"], person["address"], person["careTime"])
                 patients.append(patient)
 
-        closestNurse = 0
         cols = len(employees)
         rows = len(patients)
         arr = [[0 for i in range(cols)] for j in range(rows)]
@@ -165,7 +180,7 @@ class App:
                     minI = i
                     minJ = j
         for l in range(rows):
-            employees[minJ].add_patient(patients[minI].name)
+            employees[minJ].add_patient(patients[minI].name, minValue)
             print("Nurse " + employees[minJ].name + " has Patient " + patients[minI].name)
             for n in range(rows):
                 if arr[n][minJ]!=-1:
@@ -182,6 +197,5 @@ class App:
                         minI = i
                         minJ = j
         return employees, patients                   
-        print(arr)
 if __name__ == '__main__':
     app = App()
