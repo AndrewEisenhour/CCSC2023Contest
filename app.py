@@ -4,6 +4,8 @@ import json
 from tkinter import messagebox
 from tkinter.simpledialog import askstring
 import datetime
+import customtkinter
+
 # This app works
 curEmp = "Employee"
 class Employee:
@@ -32,8 +34,11 @@ class Patient:
 class App:
     def __init__(self):
         
-        self.root = tk.Tk()
-        self.root.geometry("500x250")
+        self.root = customtkinter.CTk()
+        width= self.root.winfo_screenwidth()
+        height= self.root.winfo_screenheight()
+        #setting tkinter window size
+        self.root.geometry("%dx%d" % (width, height))
         self.employees = []
         self.patients = []
         self.current_employee = None
@@ -50,9 +55,7 @@ class App:
         
 
         # Create app menu
-        self.app_menu = tk.OptionMenu(self.app_bar, tk.StringVar(), "Menu", "Add User", command=self.add_employee)
-        self.app_menu.pack(side=tk.RIGHT, padx=0)
-        self.app_menu.configure(width=0)
+     
 
         # Create app title label
         self.app_title = tk.Label(self.main_screen,text="Nurse's Homepage")
@@ -65,16 +68,15 @@ class App:
         Font_tuple = ("Microsoft Sans Serif", 20)
         self.employee_listbox.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         self.employee_listbox.configure(justify = 'center', font = Font_tuple)
-        self.employee_listbox.bind('<Double-1>', lambda e:self.view_employee())
+        self.employee_listbox.bind('<Double-1>', lambda e:self.
+        view_employee())
         self.employee_listbox.pack(pady=10)
         for employee in self.employees:
             self.employee_listbox.insert(tk.END, employee.name)
-        self.add_employee_button = tk.Button(self.main_screen, text="Add Employee", command=self.add_employee)
-        self.add_employee_button.pack()
 
-        self.view_employee_button = tk.Button(self.main_screen, text="View Employee", command=self.view_employee)
-        self.view_employee_button.pack()
-        self.assign_patient_button = tk.Button(self.main_screen, text="Assign Patient", command=self.assign_patient)
+        self.add_employee_button = customtkinter.CTkButton(self.main_screen, text="Add Employee", command=self.add_employee)
+        self.add_employee_button.pack()
+        self.assign_patient_button = customtkinter.CTkButton(self.main_screen, text="Assign Patient", command=self.assign_patient)
         self.assign_patient_button.pack(pady=10)
 
         # Create second screen for viewing and assigning patients
@@ -85,13 +87,13 @@ class App:
         Font_tuple = ("Microsoft Sans Serif", 20)
         self.nurse_title.configure(font = Font_tuple)
 
-        self.back_button = tk.Button(self.view_employee_screen, text="Back", command=self.back_to_main_screen)
+        self.back_button = customtkinter.CTkButton(self.view_employee_screen, text="Back", command=self.back_to_main_screen)
         self.back_button.pack(pady=10)
 
         self.patient_listbox = tk.Listbox(self.view_employee_screen, selectmode="multiple")
         self.patient_listbox.pack()
 
-        self.assign_patient_button = tk.Button(self.view_employee_screen, text="Assign Patient", command=self.assign_patient)
+        self.assign_patient_button = customtkinter.CTkButton(self.view_employee_screen, text="Assign Patient", command=self.assign_patient)
         self.assign_patient_button.pack(pady=10)
 
         self.root.mainloop()
