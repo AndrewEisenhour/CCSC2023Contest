@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
+# This app kinda works
 class Employee:
     def __init__(self, name):
         self.name = name
