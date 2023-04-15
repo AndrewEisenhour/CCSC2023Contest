@@ -1,4 +1,5 @@
 import tkinter as tk
+from map import getTravelTime
 import json
 from tkinter import messagebox
 from tkinter.simpledialog import askstring
@@ -23,22 +24,39 @@ class Patient:
         
 class App:
     def __init__(self):
-        data = json.load(open('data.json'))
         
         self.root = tk.Tk()
         self.root.geometry("500x250")
         self.employees = []
+        self.patients = []
         self.current_employee = None
-        
+        #self.employees, self.patients = self.calculate()
+
         # Create main screen with list view of employees
         self.main_screen = tk.Frame(self.root)
         self.main_screen.pack()
 
+        # Create app bar
+        self.app_bar = tk.Frame(self.root)
+        self.app_bar.pack(side=tk.TOP,fill=tk.X)
+
+        # Create app title label
+        self.app_title = tk.Label(self.app_bar,text="Nurse's Homepage")
+        self.app_title.pack(side=tk.TOP, padx=0)
+        Font_tuple = ("Microsoft Sans Serif", 40)
+        self.app_title.configure(font = Font_tuple)
+        # Create app menu
+        self.app_menu = tk.OptionMenu(self.app_bar, tk.StringVar(), "Menu", "Add User", command=self.add_employee)
+        self.app_menu.pack(side=tk.RIGHT, padx=0)
+        self.app_menu.configure(width=0)
+        
+        # Create list view of employees
         self.employee_listbox = tk.Listbox(self.main_screen)
+        Font_tuple = ("Microsoft Sans Serif", 20)
+        self.employee_listbox.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        self.employee_listbox.configure(justify = 'center', font = Font_tuple)
         self.employee_listbox.pack(pady=10)
-        for person in data["Employees"]:
-            employee = Employee(person["name"])
-            self.employees.append(employee)
+        for employee in self.employees:
             self.employee_listbox.insert(tk.END, employee.name)
         self.add_employee_button = tk.Button(self.main_screen, text="Add Employee", command=self.add_employee)
         self.add_employee_button.pack()
@@ -63,7 +81,7 @@ class App:
     def add_employee(self):
         employee_name = askstring("Add Employee", "Enter Employee Name:")
         if employee_name:
-            employee = Employee(employee_name)
+            employee = Employee(employee_name, "", [])
             self.employees.append(employee)
             self.employee_listbox.insert(tk.END, employee_name)
 
@@ -101,5 +119,51 @@ class App:
                     for patient in patients:
                         self.patient_listbox.insert(tk.END, patient)
 
+    def calculate(self):
+        data = json.load(open('data.json'))
+        employees = []
+        patients = []
+        for person in data["Employees"]:
+                employee = Employee(person["name"], person["address"], person["patients"])
+                employees.append(employee)
+        for person in data["Patients"]:
+                patient = Patient(person["name"], person["address"], person["careTime"])
+                patients.append(patient)
+
+        closestNurse = 0
+        cols = len(employees)
+        rows = len(patients)
+        arr = [[0 for i in range(cols)] for j in range(rows)]
+        minValue = 1000000000000000000
+        minI = 0
+        minJ = 0
+        for i in range(rows):
+            for j in range(cols):
+                patient = patients[i]
+                nurse = employees[j]
+                arr[i][j]=getTravelTime(patient.address, nurse.address)
+                if arr[i][j]<minValue:
+                    minValue=arr[i][j]
+                    minI = i
+                    minJ = j
+        for l in range(rows):
+            employees[minJ].add_patient(patients[minI].name)
+            print("Nurse " + employees[minJ].name + " has Patient " + patients[minI].name)
+            for n in range(rows):
+                if arr[n][minJ]!=-1:
+                    arr[n][minJ]+=minValue+patients[minI].careTime
+            for m in range(cols):
+                arr[minI][m]=-1
+            minValue=1000000000000000000
+            for i in range(rows):
+                for j in range(cols):
+                    patient = patients[i]
+                    nurse = employees[j]
+                    if arr[i][j]<minValue and arr[i][j]>=0:
+                        minValue=arr[i][j]
+                        minI = i
+                        minJ = j
+        return employees, patients                   
+        print(arr)
 if __name__ == '__main__':
     app = App()
