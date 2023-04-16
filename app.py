@@ -15,6 +15,7 @@ class Employee:
         self.address = address
         self.patients = patients
         self.startTimes = []
+        self.endTime = 0
 
     def add_patient(self, patient, time):
         self.patients.append(patient)
@@ -25,6 +26,9 @@ class Employee:
     
     def get_startTimes(self):
         return self.startTimes
+    
+    def get_endTime(self):
+        return self.endTime
 
 class Patient:
     def __init__(self, name, address, careTime):
@@ -140,18 +144,22 @@ corner_radius=0,width=screenWidth+60,text_color="black")
         if self.current_employee:
             patient_name = askstring("Assign Patient", "Enter Patient Name:")
             patient_address = askstring("Assign Patient", "Enter Patient Address:")
-            patient_care = askstring("Assign Patient", "Enter time of care:")
+            patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
             if patient_name:
                 patient = Patient(patient_name, patient_address, patient_care)
                 self.patients.append(patient)
                 for employee in self.employees:
                     if employee.name == self.current_employee:
-                        employee.add_patient(patient_name, 34)
+                        travelTime = getTravelTime(employee.address, patient_address)
+                        employee.add_patient(patient_name, travelTime+employee.get_endTime())
+                        employee.endTime=employee.get_endTime()+int(patient_care)*60+travelTime
+                        employee.address=patient_address
                         self.update_patient_listbox()
                         break
         
     def update_patient_listbox(self):
         self.patient_listbox.delete(0, tk.END)
+        format = '%I:%M %p'
         if self.current_employee:
             for employee in self.employees:
                 if employee.name == self.current_employee:
@@ -160,10 +168,25 @@ corner_radius=0,width=screenWidth+60,text_color="black")
                     count = 1
                     time = datetime.datetime(100,1,1,8,0,0)
                     for i in range(len(patients)):
-                        time2 = time + datetime.timedelta(0,startTimes[i])
-                        self.patient_listbox.insert(tk.END, str(count) + ". " + patients[i] + " " + str(time2.time()))
+                        timeDelta = datetime.timedelta(0, startTimes[i])
+                        time2 = time + timeDelta
+                        self.patient_listbox.insert(tk.END, str(count) + ". " + patients[i] + " " + str(time2.strftime(format)))
                         count += 1
-
+    
+    # A simple version of calculate to not have calls every time                    
+    def calculateMock(self):
+        data = json.load(open('data.json'))
+        employees = []
+        patients = []
+        for person in data["Employees"]:
+                employee = Employee(person["name"], person["address"], person["patients"])
+                employees.append(employee)
+        for person in data["Patients"]:
+                patient = Patient(person["name"], person["address"], person["careTime"])
+                patients.append(patient)
+        return employees, patients
+    
+    # The actual calculate function
     def calculate(self):
         data = json.load(open('data.json'))
         employees = []
@@ -193,9 +216,11 @@ corner_radius=0,width=screenWidth+60,text_color="black")
         for l in range(rows):
             employees[minJ].add_patient(patients[minI].name, minValue)
             print("Nurse " + employees[minJ].name + " has Patient " + patients[minI].name)
+            employees[minJ].address=patients[minI].address
+            employees[minJ].endTime=minValue+patients[minI].careTime
             for n in range(rows):
                 if arr[n][minJ]!=-1:
-                    arr[n][minJ]+=minValue+patients[minI].careTime
+                    arr[n][minJ]=minValue+patients[minI].careTime+getTravelTime(patients[minI].address, patients[n].address)
             for m in range(cols):
                 arr[minI][m]=-1
             minValue=1000000000000000000
