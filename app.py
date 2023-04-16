@@ -1,7 +1,7 @@
 import tkinter as tk
 from map import getTravelTime
 import json
-from tkinter import messagebox
+from tkinter import *
 from tkinter.simpledialog import askstring
 import datetime
 import customtkinter
@@ -45,6 +45,11 @@ class App:
         self.current_employee = None
         self.employees, self.patients = self.calculate()
 
+        #Background??
+        bgimg= tk.PhotoImage(file="bkgpng.png")
+        self.background = Label(self.root, image=bgimg)
+        self.background.place(x=0,y=0, relwidth=1, relheight=1)
+        
         # Create main screen with list view of employees
         self.main_screen = tk.Frame(self.root)
         self.main_screen.pack()
@@ -76,11 +81,15 @@ corner_radius=0,width=screenWidth+60,text_color="black")
         for employee in self.employees:
             self.employee_listbox.insert(tk.END, employee.name)
 
+        #Add Employee Button
         self.add_employee_button = customtkinter.CTkButton(self.main_screen, text="Add Employee", command=self.add_employee)
         self.add_employee_button.pack(pady=10)
+        
+        #Assign Patient Button
         self.assign_patient_button = customtkinter.CTkButton(self.main_screen, text="Assign Patient", command=self.assign_patient)
         self.assign_patient_button.pack(pady=10)
 
+        
 
 
 

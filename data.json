@@ -12,24 +12,6 @@
                 "name": "Sawyer McDonald",
                 "patients": [],
                 "address": "927 S Farm Road 197, Springfield, MO"
-            },
-            {
-                "id": 3,
-                "name": "Paul Thompson",
-                "patients": [],
-                "address": "2557 S Nettleton Ave, Springfield, MO"
-            },
-            {
-                "id": 4,
-                "name": "Noah Kilpater",
-                "patients": [],
-                "address": "428 S Duke Ave, Springfield, MO"
-            },
-            {
-                "id": 5,
-                "name": "Claton Cuperton",
-                "patients": [],
-                "address": "1841 E Farm Road 56, Fair Grove, MO"
             }
         ],
     "Patients":
@@ -51,108 +33,6 @@
                 "name": "Winfred Welsh",
                 "address": "217 Sophie Jane Ln, Duenweg, MO",
                 "careTime": 2400
-            },
-            {
-                "id": 4,
-                "name": "Rufus Larsen",
-                "address": "910 S Devonshire Dr, Springfield, MO",
-                "careTime": 900
-            },
-            {
-                "id": 5,
-                "name": "Wilbur Garslee",
-                "address": "1750 W Bennett St, Springfield, MO",
-                "careTime": 7200
-            },
-            {
-                "id": 6,
-                "name": "Percival Findle",
-                "address": "5496 S Jefferson Ave, Springfield, MO",
-                "careTime": 2000
-            },
-            {
-                "id": 7,
-                "name": "Eileen Smople",
-                "address": "4841 W Edward St, Springfield, MO",
-                "careTime": 5400
-            },
-            {
-                "id": 8,
-                "name": "Barney Winterson",
-                "address": "624 E Seminole St, Springfield, MO",
-                "careTime": 6600
-            },
-            {
-                "id": 9,
-                "name": "Ernest Englader",
-                "address": "2278 S Inglewood Rd, Springfield, MO",
-                "careTime": 4800
-            },
-            {
-                "id": 10,
-                "name": "Dolores Spander",
-                "address": "1851 E Vincent St, Springfield, MO",
-                "careTime": 7200
-            },
-            {
-                "id": 11,
-                "name": "Cyril Rogers",
-                "address": "2346 N Kellett Ave, Springfield, MO",
-                "careTime": 6900
-            },
-            {
-                "id": 12,
-                "name": "Enoch Wethers",
-                "address": "4873 S Burrows Ave, Springfield, MO",
-                "careTime": 2600
-            },
-            {
-                "id": 13,
-                "name": "Patricia Burns",
-                "address": "2977 W Cedarbluff Dr, Springfield, MO",
-                "careTime": 3200
-            },
-            {
-                "id": 14,
-                "name": "Bernadette Powell",
-                "address": "1604 W Chestnut St, Springfield, MO",
-                "careTime": 5700
-            },
-            {
-                "id": 15,
-                "name": "Abraham Multiplista",
-                "address": "3928 N Farm Road 165, Springfield, MO",
-                "careTime": 4300
-            },
-            {
-                "id": 16,
-                "name": "Ethel Noble",
-                "address": "1833 S Sieger Dr, Springfield, MO",
-                "careTime": 6300
-            },
-            {
-                "id": 17,
-                "name": "Gloria Gyllenhaal",
-                "address": "1165 N New Castle Ave, Springfield, MO",
-                "careTime": 8000
-            },
-            {
-                "id": 18,
-                "name": "Abner White",
-                "address": "3550 E Cherry St, Springfield, MO",
-                "careTime": 4500
-            },
-            {
-                "id": 19,
-                "name": "Sidney Saxon",
-                "address": "1439 S Luster Ave, Springfield, MO",
-                "careTime": 5900
-            },
-            {
-                "id": 20,
-                "name": "Howard George",
-                "address": "6542 E Division St, Springfield, MO",
-                "careTime": 3700
-            }
+            }            
         ]
 }
