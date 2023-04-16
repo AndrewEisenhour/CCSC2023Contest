@@ -102,7 +102,7 @@ class App:
         self.add_employee_button.pack(pady=10)
         
         #Assign Patient Button
-        self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Assign Patient(main)", command=self.assign_patient)
+        self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Assign Patient", command=self.assign_patient)
         self.assign_patient_button.pack(pady=0)
 
         #MONKE
@@ -122,6 +122,7 @@ class App:
         gif_label = tk.Label(self.monke,image="")
         #MONKE MUSIC
         def play_sound():
+            gif_label.pack_forget()
             pygame.mixer.init()
             pygame.mixer.music.load("monkeyMusic.wav")
             pygame.mixer.music.play()
@@ -152,10 +153,10 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         #Employee screen back button
         self.back_button = customtkinter.CTkButton(self.view_employee_screen2, text="Back", command=self.back_to_main_screen)
         self.back_button.pack(pady=10)
-        
+
         #Employee screen Assign button
-        self.assign_patient_button2 = customtkinter.CTkButton(self.view_employee_screen2, text="Assign Patient", command=self.assign_patient)
-        self.assign_patient_button2.pack()
+        self.assign_patient_button = customtkinter.CTkButton(self.view_employee_screen2, text="Assign Patient", command=self.assign_patient)
+        self.assign_patient_button.pack()
 
         self.root.mainloop()
 
@@ -180,7 +181,10 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
             self.root.title(f"Viewing Employee: {self.current_employee}")
             
             
-            self.update_patient_listbox()       
+            self.update_patient_listbox()
+    
+
+           
 
     def back_to_main_screen(self):
         self.current_employee = None
@@ -191,7 +195,6 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         self.root.title("Employee List")
 
     def assign_patient(self):
-<<<<<<< Updated upstream
         if self.current_employee:
             patient_name = askstring("Assign Patient", "Enter Patient Name:")
             patient_address = askstring("Assign Patient", "Enter Patient Address:")
@@ -204,24 +207,6 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
                         employee.add_patient(patient_name, 34)
                         self.update_patient_listbox()
                         break
-=======
-        patient_name = askstring("Assign Patient", "Enter Patient Name:")
-        patient_address = askstring("Assign Patient", "Enter Patient Address:")
-        patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
-        if patient_name:
-            patient = Patient(patient_name, patient_address, patient_care)
-            self.patients.append(patient)
-            for employee in self.employees:
-                if employee.name == self.current_employee:
-                    print("run")
-                    travelTime = getTravelTime(employee.address, patient_address)
-                    employee.add_patient(patient_name, travelTime+employee.get_endTime())
-                    employee.endTime=employee.get_endTime()+int(patient_care)*60+travelTime
-                    employee.address=patient_address
-                    self.update_patient_listbox()
-                    self.employees, self.patients = self.calculate()
-                    break
->>>>>>> Stashed changes
         
     def update_patient_listbox(self):
         self.patient_listbox.delete(0, tk.END)
