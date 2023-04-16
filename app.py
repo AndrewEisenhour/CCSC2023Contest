@@ -5,6 +5,9 @@ from tkinter import *
 from tkinter.simpledialog import askstring
 import datetime
 import customtkinter
+from PIL import Image, ImageTk
+import pygame
+import time
 
 # This app works
 screenWidth= 0
@@ -47,6 +50,8 @@ class Patient:
         self.careTime = careTime
         
 class App:
+    
+
     def __init__(self):
         self.root = customtkinter.CTk()
 
@@ -73,6 +78,9 @@ class App:
         self.main_screen2 = tk.Frame(self.root)
         self.main_screen2.pack(pady=frameSeperation)
      
+        #MONKE
+        self.monke = tk.Frame(self.root)
+        self.monke.pack(side=BOTTOM)
 
         # Create app title label/HEADER
         self.app_title = customtkinter.CTkLabel(self.main_screen,text="Nurse's Homepage",fg_color=headerColor,
@@ -97,6 +105,33 @@ class App:
         self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Assign Patient", command=self.assign_patient)
         self.assign_patient_button.pack(pady=0)
 
+        #MONKE
+        
+        info = Image.open("bkg.gif")
+        frames=info.n_frames
+        print(frames)
+        im=[tk.PhotoImage(file="bkg.gif",format=f'gif -index {i}') for i in range(frames)]
+        count = 0
+        def animation(count):
+            im2 = im[count]
+            gif_label.configure(image=im2)
+            count+=1
+            if count == frames:
+                count = 0
+            self.root.after(50,lambda :animation(count))
+        gif_label = tk.Label(self.monke,image="")
+        #MONKE MUSIC
+        def play_sound():
+            gif_label.pack_forget()
+            pygame.mixer.init()
+            pygame.mixer.music.load("monkeyMusic.wav")
+            pygame.mixer.music.play()
+            time.sleep(6.5)
+            gif_label.pack()
+        start = tk.Button(self.monke, text="monke",command=lambda:[play_sound(),animation(count)],font=("Microsoft Sans Serif", 6))
+        start.pack(side=BOTTOM)
+        
+        
 
 
 
