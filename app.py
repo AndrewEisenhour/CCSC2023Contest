@@ -7,8 +7,22 @@ import datetime
 import customtkinter
 
 # This app works
+screenWidth= 0
+screenHeight = 0
 curEmp = "Employee"
+
 buttonColor = "#3b8ed0"
+
+headerFont = ("Microsoft Sans Serif", 40)
+headerHeight = 50
+headerWidth = screenWidth
+headerColor = ("#f69220", "gray75")
+
+listFont = ("Microsoft Sans Serif", 20)
+listWidth = 30
+
+frameSeperation = 10
+
 class Employee:
     def __init__(self, name, address, patients):
         self.name = name
@@ -34,19 +48,21 @@ class Patient:
         
 class App:
     def __init__(self):
-        
         self.root = customtkinter.CTk()
+
+        #setting tkinter window size
         screenWidth= self.root.winfo_screenwidth()
         screenHeight= self.root.winfo_screenheight()
-        #setting tkinter window size
         self.root.geometry("%dx%d" % (screenWidth, screenHeight))
+        
+        #Calculation
         self.employees = []
         self.patients = []
         self.current_employee = None
         self.employees, self.patients = self.calculate()
 
         #Background??
-        bgimg= tk.PhotoImage(file="image.png")
+        bgimg=tk.PhotoImage(file="image.png")
         self.background = Label(self.root, image=bgimg)
         self.background.place(x=0,y=0, relwidth=1, relheight=1)
         
@@ -55,21 +71,19 @@ class App:
         self.main_screen.pack()
         
         self.main_screen2 = tk.Frame(self.root)
-        self.main_screen2.pack(pady=10)
+        self.main_screen2.pack(pady=frameSeperation)
      
 
-        # Create app title label
-        self.app_title = customtkinter.CTkLabel(self.main_screen,text="Nurse's Homepage",fg_color=("#f69220", "gray75"),
-corner_radius=0,width=screenWidth,text_color="black",height=50)
-        self.app_title.pack(side=tk.TOP, padx=0)
-        Font_tuple = ("Microsoft Sans Serif", 40)
-        self.app_title.configure(font = Font_tuple)
+        # Create app title label/HEADER
+        self.app_title = customtkinter.CTkLabel(self.main_screen,text="Nurse's Homepage",fg_color=headerColor,
+                                                width=screenWidth,text_color="black",height=headerHeight)
+        self.app_title.pack(side=tk.TOP)
+        self.app_title.configure(font = headerFont)
 
         # Create list view of employees
-        self.employee_listbox = tk.Listbox(self.main_screen2,width=30)
-        Font_tuple = ("Microsoft Sans Serif", 20)
-        self.employee_listbox.pack(side=tk.TOP)
-        self.employee_listbox.configure(justify = 'center', font = Font_tuple)
+        self.employee_listbox = tk.Listbox(self.main_screen2,width=listWidth)
+        self.employee_listbox.pack()
+        self.employee_listbox.configure(justify = 'center', font = listFont)
         self.employee_listbox.bind('<Double-1>', lambda e:self.view_employee())
         self.employee_listbox.pack()
         for employee in self.employees:
@@ -90,22 +104,24 @@ corner_radius=0,width=screenWidth,text_color="black",height=50)
         self.view_employee_screen = tk.Frame(self.root)
         self.view_employee_screen2 = tk.Frame(self.root)
 
+        #Employee screen Header
         self.nurse_title=customtkinter.CTkLabel(self.view_employee_screen,fg_color=("#f69220", "gray75"),
-corner_radius=0,width=screenWidth,text_color="black",height=50)
-        self.nurse_title.pack(side=tk.TOP, padx=0)
-        self.nurse_title.configure(font = ("Microsoft Sans Serif", 40))
+corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
+        self.nurse_title.pack(side=tk.TOP)
+        self.nurse_title.configure(font = headerFont)
 
-        
-
-        self.patient_listbox = tk.Listbox(self.view_employee_screen2, selectmode="multiple",width=30)
+        #Employee screen listbox
+        self.patient_listbox = tk.Listbox(self.view_employee_screen2, selectmode="multiple",width=listWidth)
         self.patient_listbox.pack()
-        self.patient_listbox.configure(justify = 'center', font = Font_tuple)
+        self.patient_listbox.configure(justify = 'center', font = listFont)
 
+        #Employee screen back button
         self.back_button = customtkinter.CTkButton(self.view_employee_screen2, text="Back", command=self.back_to_main_screen)
         self.back_button.pack(pady=10)
 
+        #Employee screen Assign button
         self.assign_patient_button = customtkinter.CTkButton(self.view_employee_screen2, text="Assign Patient", command=self.assign_patient)
-        self.assign_patient_button.pack(pady=10)
+        self.assign_patient_button.pack()
 
         self.root.mainloop()
 
