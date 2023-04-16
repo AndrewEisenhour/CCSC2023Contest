@@ -23,6 +23,8 @@ listWidth = 30
 
 frameSeperation = 10
 
+patientInfoFont = ("Microsoft Sans Serif", 15)
+
 class Employee:
     def __init__(self, name, address, patients):
         self.name = name
@@ -63,7 +65,7 @@ class App:
         self.employees = []
         self.patients = []
         self.current_employee = None
-        self.employees, self.patients = self.calculateMock()
+        self.employees, self.patients = self.calculate()
 
         #Background??
         bgimg=tk.PhotoImage(file="image.png")
@@ -92,13 +94,9 @@ class App:
         self.employee_listbox.pack()
         for employee in self.employees:
             self.employee_listbox.insert(tk.END, employee.name)
-
-        #Add Employee Button
-        self.add_employee_button = customtkinter.CTkButton(self.main_screen2, text="Add Employee", command=self.add_employee)
-        self.add_employee_button.pack(pady=10)
         
-        #Assign Patient Button
-        self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Assign Patient", command=self.assign_patient)
+        #Add Patient Button
+        self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Add Patient", command=self.assign_patient)
         self.assign_patient_button.pack(pady=0)
 
 
@@ -115,10 +113,11 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         self.nurse_title.configure(font = headerFont)
 
         #Employee screen listbox
-        self.patient_listbox = tk.Listbox(self.view_employee_screen2, selectmode="multiple",width=listWidth)
+        self.patient_listbox = tk.Listbox(self.view_employee_screen2, width=listWidth)
         self.patient_listbox.pack()
         self.patient_listbox.configure(justify = 'center', font = listFont)
-
+        self.patient_listbox.bind('<Double-1>', lambda e:self.view_patient())
+        
         #Employee screen back button
         self.back_button = customtkinter.CTkButton(self.view_employee_screen2, text="Back", command=self.back_to_main_screen)
         self.back_button.pack(pady=10)
@@ -129,12 +128,6 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
 
         self.root.mainloop()
 
-    def add_employee(self):
-        employee_name = askstring("Add Employee", "Enter Employee Name:")
-        if employee_name:
-            employee = Employee(employee_name, "", [])
-            self.employees.append(employee)
-            self.employee_listbox.insert(tk.END, employee_name)
 
     def view_employee(self):
         selected_employee = self.employee_listbox.get(tk.ACTIVE)
@@ -152,7 +145,37 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
             
             self.update_patient_listbox()
     
+    def view_patient(self):
+        selected_patient = self.patient_listbox.get(tk.ACTIVE)
+        if selected_patient:
+            self.current_patient = selected_patient
+            length = len(selected_patient)
+            patName = selected_patient[3:length]
+            index = patName.find('0')
+            if index == -1:
+                 index = patName.find('1')
+                 if index == -1:
+                      index = patName.find('2')
+            patName = patName[0:index-1]
+            for patient in self.patients:
+                 if patName.__eq__(patient.name):
+                    patAddress = patient.address
+                    patWork = patient.careTime
 
+            global pop
+            pop=Toplevel(self.root)
+            pop.title("Patient Info")
+            pop.geometry("500x200")
+
+            patient_name = Label(pop, text="Patient Name: "+patName,fg="black",justify=LEFT,font = patientInfoFont)
+            patient_name.pack()
+            patient_address = Label(pop,text="Patient Address: "+patAddress, fg="black",justify=LEFT,font = patientInfoFont)
+            patient_address.pack()
+            patient_work = Label(pop,text="Patient Worktime: "+str(patWork), fg="black",justify=LEFT,font = patientInfoFont)
+            patient_work.pack()
+
+            pop_frame = Frame(pop)
+            pop_frame.pack()
            
 
     def back_to_main_screen(self):
@@ -164,9 +187,9 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         self.root.title("Employee List")
 
     def assign_patient(self):
-        patient_name = askstring("Assign Patient", "Enter Patient Name:")
-        patient_address = askstring("Assign Patient", "Enter Patient Address:")
-        patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
+        patient_name = askstring("Assign Patient", "Enter Patient Name:",parent=self.root)
+        patient_address = askstring("Assign Patient", "Enter Patient Address:",parent=self.root)
+        patient_care = askstring("Assign Patient", "Enter time of care in minutes:",parent=self.root)
         if patient_name:
             patient = Patient(patient_name, patient_address, patient_care)
             self.patients.append(patient)
