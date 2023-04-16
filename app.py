@@ -21,6 +21,7 @@ headerColor = ("#f69220", "gray75")
 listFont = ("Microsoft Sans Serif", 20)
 listWidth = 30
 
+patientInfoFont = ("Microsoft Sans Serif", 15)
 frameSeperation = 10
 
 class Employee:
@@ -92,13 +93,9 @@ class App:
         self.employee_listbox.pack()
         for employee in self.employees:
             self.employee_listbox.insert(tk.END, employee.name)
-
-        #Add Employee Button
-        self.add_employee_button = customtkinter.CTkButton(self.main_screen2, text="Add Employee", command=self.add_employee)
-        self.add_employee_button.pack(pady=10)
         
         #Assign Patient Button
-        self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Assign Patient", command=self.assign_patient)
+        self.assign_patient_button = customtkinter.CTkButton(self.main_screen2, text="Add Patient", command=self.add_patient)
         self.assign_patient_button.pack(pady=0)
 
 
@@ -115,9 +112,10 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         self.nurse_title.configure(font = headerFont)
 
         #Employee screen listbox
-        self.patient_listbox = tk.Listbox(self.view_employee_screen2, selectmode="multiple",width=listWidth)
+        self.patient_listbox = tk.Listbox(self.view_employee_screen2, selectmode="extended",width=listWidth)
         self.patient_listbox.pack()
         self.patient_listbox.configure(justify = 'center', font = listFont)
+        self.patient_listbox.bind('<Double-1>', lambda e:self.view_patient())
 
         #Employee screen back button
         self.back_button = customtkinter.CTkButton(self.view_employee_screen2, text="Back", command=self.back_to_main_screen)
@@ -128,13 +126,6 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         self.assign_patient_button.pack()
 
         self.root.mainloop()
-
-    def add_employee(self):
-        employee_name = askstring("Add Employee", "Enter Employee Name:")
-        if employee_name:
-            employee = Employee(employee_name, "", [])
-            self.employees.append(employee)
-            self.employee_listbox.insert(tk.END, employee_name)
 
     def view_employee(self):
         selected_employee = self.employee_listbox.get(tk.ACTIVE)
@@ -151,6 +142,38 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
             
             
             self.update_patient_listbox()
+
+    def view_patient(self):
+        selected_patient = self.patient_listbox.get(tk.ACTIVE)
+        if selected_patient:
+            self.current_patient = selected_patient
+            length = len(selected_patient)
+            patName = selected_patient[3:length]
+            index = patName.find('0')
+            if index == -1:
+                 index = patName.find('1')
+                 if index == -1:
+                      index = patName.find('2')
+            patName = patName[0:index-1]
+            for patient in self.patients:
+                 if patName.__eq__(patient.name):
+                    patAddress = patient.address
+                    patWork = patient.careTime
+
+            global pop
+            pop=Toplevel(self.root)
+            pop.title("Patient Info")
+            pop.geometry("500x200")
+
+            patient_name = Label(pop, text="Patient Name: "+patName,fg="black",justify=LEFT,font = patientInfoFont)
+            patient_name.pack()
+            patient_address = Label(pop,text="Patient Address: "+patAddress, fg="black",justify=LEFT,font = patientInfoFont)
+            patient_address.pack()
+            patient_work = Label(pop,text="Patient Worktime: "+str(patWork), fg="black",justify=LEFT,font = patientInfoFont)
+            patient_work.pack()
+
+            pop_frame = Frame(pop)
+            pop_frame.pack()
     
 
            
@@ -165,9 +188,9 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
 
     def assign_patient(self):
         if self.current_employee:
-            patient_name = askstring("Assign Patient", "Enter Patient Name:")
-            patient_address = askstring("Assign Patient", "Enter Patient Address:")
-            patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
+            patient_name = askstring("Assign Patient", "Enter Patient Name:",parent=self.root)
+            patient_address = askstring("Assign Patient", "Enter Patient Address:",parent=self.root)
+            patient_care = askstring("Assign Patient", "Enter time of care in minutes:",parent=self.root)
             if patient_name:
                 patient = Patient(patient_name, patient_address, patient_care)
                 self.patients.append(patient)
@@ -179,7 +202,26 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
                         employee.address=patient_address
                         self.update_patient_listbox()
                         break
-        
+    def add_patient(self):
+            patient_name = askstring("Assign Patient", "Enter Patient Name:", parent=self.root)
+            patient_address = askstring("Assign Patient", "Enter Patient Address:",parent=self.root)
+            patient_care = askstring("Assign Patient", "Enter time of care in minutes:",parent=self.root)
+            if patient_name:
+                patient = Patient(patient_name, patient_address, patient_care)
+                self.patients.append(patient)
+
+                #Places patient with the lowest time nurse
+                smallestEndTime = 1000000000000000000
+                for employee in self.employees:
+                        if employee.endTime < smallestEndTime:
+                             chosenEmp = employee
+                             smallestEndTime = employee.endTime
+                travelTime = getTravelTime(chosenEmp.address, patient_address)
+                chosenEmp.add_patient(patient_name, travelTime+chosenEmp.get_endTime())
+                chosenEmp.endTime=chosenEmp.get_endTime()+int(patient_care)*60+travelTime
+                chosenEmp.address=patient_address
+                self.update_patient_listbox()
+                        
     def update_patient_listbox(self):
         self.patient_listbox.delete(0, tk.END)
         format = '%I:%M %p'
