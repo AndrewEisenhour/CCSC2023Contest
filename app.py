@@ -169,8 +169,8 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
         if patient_name:
             patient = Patient(patient_name, patient_address, patient_care)
+            self.patients.append(patient)
             if self.current_employee:
-                self.patients.append(patient)
                 for employee in self.employees:
                     if employee.name == self.current_employee:
                         travelTime = getTravelTime(employee.address, patient_address)
@@ -189,7 +189,7 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
                     value = travelTime + employee.get_endTime()
                     if value < minValue:
                         minTravelTime = travelTime
-                        minValue = travelTime
+                        minValue = value
                         bestEmployee = i
                 employee = self.employees[bestEmployee]
                 employee.add_patient(patient_name, minTravelTime+employee.get_endTime())
