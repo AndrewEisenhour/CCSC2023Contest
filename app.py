@@ -63,7 +63,7 @@ class App:
         self.employees = []
         self.patients = []
         self.current_employee = None
-        self.employees, self.patients = self.calculate()
+        self.employees, self.patients = self.calculateMock()
 
         #Background??
         bgimg=tk.PhotoImage(file="image.png")
@@ -164,12 +164,12 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
         self.root.title("Employee List")
 
     def assign_patient(self):
-        if self.current_employee:
-            patient_name = askstring("Assign Patient", "Enter Patient Name:")
-            patient_address = askstring("Assign Patient", "Enter Patient Address:")
-            patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
-            if patient_name:
-                patient = Patient(patient_name, patient_address, patient_care)
+        patient_name = askstring("Assign Patient", "Enter Patient Name:")
+        patient_address = askstring("Assign Patient", "Enter Patient Address:")
+        patient_care = askstring("Assign Patient", "Enter time of care in minutes:")
+        if patient_name:
+            patient = Patient(patient_name, patient_address, patient_care)
+            if self.current_employee:
                 self.patients.append(patient)
                 for employee in self.employees:
                     if employee.name == self.current_employee:
@@ -179,6 +179,24 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
                         employee.address=patient_address
                         self.update_patient_listbox()
                         break
+            else:
+                minValue = 10000000000000
+                minTravelTime = 100000000000
+                bestEmployee = 0
+                for i in range(len(self.employees)):
+                    employee = self.employees[i]
+                    travelTime = getTravelTime(employee.address, patient_address)
+                    value = travelTime + employee.get_endTime()
+                    if value < minValue:
+                        minTravelTime = travelTime
+                        minValue = travelTime
+                        bestEmployee = i
+                employee = self.employees[bestEmployee]
+                employee.add_patient(patient_name, minTravelTime+employee.get_endTime())
+                employee.endTime=employee.get_endTime()+int(patient_care)*60+travelTime
+                employee.address=patient_address
+                self.update_patient_listbox()
+            
         
     def update_patient_listbox(self):
         self.patient_listbox.delete(0, tk.END)
