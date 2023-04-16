@@ -171,7 +171,7 @@ corner_radius=0,width=screenWidth,text_color="black",height=headerHeight)
             patient_name.pack()
             patient_address = Label(pop,text="Patient Address: "+patAddress, fg="black",justify=LEFT,font = patientInfoFont)
             patient_address.pack()
-            patient_work = Label(pop,text="Patient Worktime: "+str(patWork), fg="black",justify=LEFT,font = patientInfoFont)
+            patient_work = Label(pop,text="Patient Worktime: "+str(int(patWork/60)) + " minutes", fg="black",justify=LEFT,font = patientInfoFont)
             patient_work.pack()
 
             pop_frame = Frame(pop)
